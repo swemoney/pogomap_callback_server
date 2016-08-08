@@ -74,17 +74,17 @@ post '/pogowebhook' do
                         pokemon['rarity'].downcase,             # Value2: Pokemon rarity
                         "#{distance.round}m #{heading_str}"     # Value3: Distance and heading
 
-          log_pokemon pokemon_id, pokemon, "BOUNDS"
+          log_pokemon pokemon_id, pokemon, "INBOUNDS", false
         else
-          log_pokemon pokemon_id, pokemon, "!BOUNDS"
+          log_pokemon pokemon_id, pokemon, "OUTBOUNDS"
         end
 
       else
-        log_pokemon pokemon_id, pokemon, "IGNORED"
+        log_pokemon pokemon_id, pokemon, "IGNORELIST"
       end
 
     else
-      log_pokemon pokemon_id, pokemon, "!SPAWNRATE"
+      log_pokemon pokemon_id, pokemon, "SPAWNRATE"
     end
 
   end
@@ -108,6 +108,7 @@ def post_to_ifttt(event_name, value1, value2, value3)
   HTTParty.post(url, body: post_body, headers: { "Content-Type": "application/json" })
 end
 
-def log_pokemon(pokemon_id, pokemon, tag)
-  logger.info "[#{tag}] A wild, #{pokemon['rarity'].downcase} #{pokemon['name']} (##{pokemon_id}) appeared!"
+def log_pokemon(pokemon_id, pokemon, tag, ignored = true)
+  status_str = ignored ? "IGNORED" : "NOTIFIED"
+  logger.info "[#{status_str}][#{tag}] A wild, #{pokemon['rarity'].downcase} #{pokemon['name']} (##{pokemon_id}) appeared!"
 end
