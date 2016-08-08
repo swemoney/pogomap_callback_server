@@ -15,6 +15,8 @@ configure do
     raise 'Can not find "app_config.json" file. Try copying the app_config.json.example to get started.'
   end
 
+  set :logging, Logger::INFO
+
   # Setup Redis
   uri = URI.parse(CONFIG['redis']['server_url'])
   REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
@@ -72,8 +74,17 @@ post '/pogowebhook' do
                         pokemon['rarity'].downcase,             # Value2: Pokemon rarity
                         "#{distance.round}m #{heading_str}"     # Value3: Distance and heading
 
+          log_pokemon pokemon_id, pokemon, "BOUNDS"
+        else
+          log_pokemon pokemon_id, pokemon, "!BOUNDS"
         end
+
+      else
+        log_pokemon pokemon_id, pokemon, "IGNORED"
       end
+
+    else
+      log_pokemon pokemon_id, pokemon, "!SPAWNRATE"
     end
 
   end
@@ -95,4 +106,8 @@ def post_to_ifttt(event_name, value1, value2, value3)
   post_body = { value1: value1, value2: value2, value3: value3 }.to_json
   url       = "https://maker.ifttt.com/trigger/#{event_name}/with/key/#{CONFIG['ifttt']['maker_channel_key']}"
   HTTParty.post(url, body: post_body, headers: { "Content-Type": "application/json" })
+end
+
+def log_pokemon(pokemon_id, pokemon, tag)
+  logger.info "[#{tag}] A wild, #{pokemon['rarity'].downcase} #{pokemon['name']} (##{pokemon_id}) appeared!"
 end
