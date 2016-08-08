@@ -1,8 +1,8 @@
 {
     "notifications": {
         "lowest_spawn_rate": 50,
-        "ignored_pokemon_ids": [23],
-        "extra_pokemon_ids": [14,20,29,32,43,54,60,69,86,73,120]
+        "ignored_pokemon_ids": [14,20,29,32,43,54,60,69,86,73,120],
+        "extra_pokemon_ids": [23]
     },
 
     "home": {
