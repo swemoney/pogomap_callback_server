@@ -25,6 +25,14 @@ configure do
   # Setup some home coords
   HOME_COORDS = Geokit::LatLng.new(CONFIG['home']['latitude'], CONFIG['home']['longitude'])
   Geokit::default_units = :meters
+
+  # Setup home bounds if we're using them
+  if CONFIG['home']['bounds']['use_bounds'] == true
+    HOME_BOUNDS = Geokit::Bounds.new(
+      Geokit::LatLng.new(CONFIG['home']['bounds']['SW']['latitude'], CONFIG['home']['bounds']['SW']['longitude']),
+      Geokit::LatLng.new(CONFIG['home']['bounds']['NE']['latitude'], CONFIG['home']['bounds']['NE']['longitude'])
+    )
+  end
 end
 
 post '/pogowebhook' do
@@ -52,19 +60,29 @@ post '/pogowebhook' do
       (pokemon['spawn_rate'].to_i >= CONFIG['notifications']['lowest_spawn_rate'])
 
       unless (CONFIG['notifications']['ignored_pokemon_ids'].include? pokemon_id.to_i)
-        destination = "#{pokemon_lat},#{pokemon_lng}"
-        distance    = HOME_COORDS.distance_to destination
-        heading     = HOME_COORDS.heading_to destination
-        heading_str = degrees_to_compass(heading)
+        if in_bounds(pokemon_lat, pokemon_lng)
 
-        post_to_ifttt CONFIG['ifttt']['maker_channel_event'], # event_name: Maker Channel event_name
-                      "#{pokemon['name']} (##{pokemon_id})",  # Value1: Pokemon Name
-                      pokemon['rarity'].downcase,             # Value2: Pokemon rarity
-                      "#{distance.round}m #{heading_str}"     # Value3: Distance and heading
+          destination = "#{pokemon_lat},#{pokemon_lng}"
+          distance    = HOME_COORDS.distance_to destination
+          heading     = HOME_COORDS.heading_to destination
+          heading_str = degrees_to_compass(heading)
+
+          post_to_ifttt CONFIG['ifttt']['maker_channel_event'], # event_name: Maker Channel event_name
+                        "#{pokemon['name']} (##{pokemon_id})",  # Value1: Pokemon Name
+                        pokemon['rarity'].downcase,             # Value2: Pokemon rarity
+                        "#{distance.round}m #{heading_str}"     # Value3: Distance and heading
+
+        end
       end
     end
 
   end
+end
+
+def in_bounds(lat, lng)
+  return true if CONFIG['home']['bounds']['use_bounds'] == false
+  return true if HOME_BOUNDS.contains(Geokit::LatLng.new lat, lng)
+  return false
 end
 
 def degrees_to_compass(degrees)

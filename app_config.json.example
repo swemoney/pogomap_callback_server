@@ -7,7 +7,18 @@
 
     "home": {
         "latitude": 37.331686,
-        "longitude": -122.030656
+        "longitude": -122.030656,
+        "bounds": {
+            "use_bounds": false,
+            "SW": {
+                "latitude": 37.330447,
+                "longitude": -122.030736
+            },
+            "NE": {
+                "latitude": 37.333424,
+                "longitude": -122.028644
+            }
+        }
     },
 
     "ifttt": {
