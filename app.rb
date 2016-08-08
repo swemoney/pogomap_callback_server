@@ -81,7 +81,7 @@ end
 
 def in_bounds(lat, lng)
   return true if CONFIG['home']['bounds']['use_bounds'] == false
-  return true if HOME_BOUNDS.contains(Geokit::LatLng.new lat, lng)
+  return true if HOME_BOUNDS.contains?(Geokit::LatLng.new lat, lng)
   return false
 end
 
