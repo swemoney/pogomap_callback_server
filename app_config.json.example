@@ -1,0 +1,26 @@
+{
+    "notifications": {
+        "lowest_spawn_rate": 50,
+        "ignored_pokemon_ids": [23],
+        "extra_pokemon_ids": [14,20,29,32,43,54,60,69,86,73,120]
+    },
+
+    "home": {
+        "latitude": 37.331686,
+        "longitude": -122.030656
+    },
+
+    "ifttt": {
+        "maker_channel_key": "YOUR_MAKER_CHANNEL_KEY",
+        "maker_channel_event": "pokemon_found"
+    },
+
+    "redis": {
+        "server_url": "redis://localhost:6379/",
+        "cache_timeout": 1800
+    },
+
+    "pokemon": {
+        "json_file": "pokemon.json"
+    }
+}
