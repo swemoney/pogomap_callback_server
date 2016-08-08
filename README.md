@@ -27,7 +27,9 @@ Google is your friend when in doubt.
 5. `cp app_config.json.example app_config.json`
 6. `rackup` (or `ruby app.rb` if you have rails 5 and rack/sinatra aren't playing nice together yet)
 
-You should be up and running at this point.
+Your server should be up and running at this point.
+
+7. Add `-wh http://localhost:4999/pogowebhook` to your PokemonGo-Map parameters. Or whatever address you installed this server on.
 
 ## Configuration
 
@@ -44,6 +46,10 @@ exactly how you like them.
 * `home`: The coordinates for where we'll calculate distance from. For example, your front door.
     * `latitude`: Latitude of your `home`
     * `longitude`: Longitude of your `home`
+    * `bounds`: A box that can be specified to ignore any notifications outside of it.
+        * `use_bounds`: true or false if you'd like to use bounds or not
+        * `SW`: latitude and longitude of the south west corner of your bounding box
+        * `NE`: latitude and longitude of the north east corner of your bounding box
 * `ifttt`: IFTTT specific settings. This app uses the IFTTT Maker channel. (https://ifttt.com/maker)
     * `maker_channel_key`: Your maker channel key.
     * `maker_channel_event`: The event_name you gave your recipe
